@@ -1,0 +1,90 @@
+{% extends 'base/main.html' %}
+
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" 
+    type='text/css' 
+    href="{% static 'styles/main.css' %}">
+
+    <title>My To Do List App </title>
+</head>
+
+<body>
+
+
+{% block content %}
+    {% if request.user.is_authenticated %}
+        <p>Welcome Back <strong>{{request.user}}</strong>
+            <br>
+           Current view count for this page is: {{view_count}}
+           
+            
+            {% if request.user.last_login %}
+                <br>
+                Your last login was in : 
+                {{ request.user.last_login|date:"d-m-Y H:i:s" }}
+            {% endif %}
+            <br>
+            <a href="{% url  'logout' %}">Log out</a></p> 
+
+    {% else %}
+        <a href="{% url 'login' %}"">Log in</a>
+    {% endif %}
+    <hr>
+    
+    <div class="task-info">
+        <h2> {% if tasks.count > 1 %}
+                You have {{count}} tasks left to do
+             {% elif  tasks.count == 1 %}
+                You have {{count}} task left to do
+            {% elif  tasks.count == 0 %}
+                You have no tasks left to do
+             {% endif %}
+        </h2>
+        <a href="{% url 'task-create' %}" class="add-task"><img src="{% static 'images/add.png' %}" alt="add"></a>
+      </div>
+
+
+<form method="GET">
+    <img src="{% static 'images/search.png' %}" alt="search">
+    <input type="text" name="search-area" value='{{search_input}}' placeholder="Search Task here ...">
+</form>
+<br>
+
+
+
+<br>
+<table>
+    <tr>
+        <th><h3>Tasks List</h3></th>
+        <th></th>
+    </tr>
+    {% for task in tasks %}
+    <tr>
+    
+        <td>{% if task.complete %}
+                <s><a href="{% url 'task' task.id %}">{{ task.title }}</a></s>
+            {% else %}
+                <a href="{% url 'task' task.id %}">{{ task.title }}</a>
+            {% endif %}</td>
+        <td><a href="{% url 'task-update' task.id %}"><img src="{% static 'images/update.png' %}" alt="update"></a></td>
+        <td><a href="{% url 'task-delete' task.id %}"><img src="{% static 'images/remove.png' %}" alt="Delete"></a></td>
+
+        
+    </tr>
+    {% empty %}
+        <h3>Horray! No tasks left to do.</h3>
+    {% endfor %}    
+</table>
+{% endblock content %}
+</body>
+</html>
+
+
+
+
