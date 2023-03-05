@@ -29,12 +29,23 @@ def task_list_api(request):
     
 @csrf_exempt
 def task_detail_api(request, pk):
-    if request.method == "POST":
-        pass 
-    elif request.method == "GET":
+    try:
         task = Task.objects.get(id=pk)
+    except Task.DoesNotExist:
+        return HttpResponse(status=404)
+
+    if request.method == "GET":
         serializer = TaskSerializer(task)
-        return JsonResponse(serializer.data ,safe=False)
+        return JsonResponse(serializer.data)
+    elif request.method == "PUT":
+        serializer = TaskSerializer(task, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data)
+        return JsonResponse(serializer.errors, status=400)
+    elif request.method == "DELETE":
+        task.delete()
+        return HttpResponse(status=204)
     
 
 
