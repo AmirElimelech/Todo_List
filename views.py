@@ -1,24 +1,51 @@
-from datetime import date
+
 from django.views.generic.list import ListView 
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView , DeleteView , UpdateView ,FormView
 from django.urls import reverse_lazy
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect
 from django import forms
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
-
 from django.contrib.auth.views import LoginView , LogoutView 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from django.conf import settings
-
-
+from .serializers import TaskSerializer
 from . models import Task
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse ,HttpResponse
+from rest_framework import generics
+
+@csrf_exempt
+def task_list_api(request):
+    if request.method == "POST":
+        pass
+    elif request.method == "GET":
+        tasks = Task.objects.all()
+        serializer = TaskSerializer(tasks, many=True)
+        return JsonResponse(serializer.data, safe=False)
+    
+@csrf_exempt
+def task_detail_api(request, pk):
+    if request.method == "POST":
+        pass 
+    elif request.method == "GET":
+        task = Task.objects.get(id=pk)
+        serializer = TaskSerializer(task)
+        return JsonResponse(serializer.data ,safe=False)
+    
 
 
+class TaskListCreateView(generics.ListCreateAPIView):
+    queryset = Task.objects.all()
+    serializer_class = TaskSerializer
 
+
+class TaskRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Task.objects.all()
+    serializer_class = TaskSerializer
 
 
 class CustomLoginView(LoginView):
