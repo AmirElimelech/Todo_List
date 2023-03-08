@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import TaskList ,TaskDetail , TaskCreate , TaskUpdate , TaskDelete ,CustomLoginView ,CustomLogoutView ,SignUp , task_list_api , task_detail_api
+from .views import TaskList ,TaskDetail , TaskCreate , TaskUpdate , TaskDelete , CustomLoginView ,CustomLogoutView ,SignUp ,task_list_api,task_detail_api
 
 
 

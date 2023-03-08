@@ -15,13 +15,17 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import (CreateView, DeleteView, FormView,
                                        UpdateView)
 from django.views.generic.list import ListView
-from rest_framework import generics
+from rest_framework import generics ,status
 from rest_framework.parsers import JSONParser
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 from .models import Task
 from .serializers import TaskSerializer
 
-
+@api_view(['GET','POST'])  #list of methods that are allowed are GET and POST .. if delete is not 
+                           # mentioned above ---> means that once delete is choosen it will show 
+                           # error 
 @csrf_exempt
 def task_list_api(request):
     if request.method == "POST":
@@ -29,35 +33,179 @@ def task_list_api(request):
         serializer = TaskSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
+            return JsonResponse(serializer.data, status = status.HTTP_201_CREATED )
+        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST )
     elif request.method == "GET":
         tasks = Task.objects.all()
         serializer = TaskSerializer(tasks, many=True)
         return JsonResponse(serializer.data, safe=False)
 
+# @api_view(['GET', 'POST', 'PUT', 'DELETE'])
+# @csrf_exempt
+# def task_detail_api(request, pk):
+#     try:
+#         task = Task.objects.get(id=pk)
+#         data = JSONParser().parse(request)
+#     except Task.DoesNotExist:
+#         return Response(status=status.HTTP_404_NOT_FOUND)
+
+#     if request.method == "GET":
+#         serializer = TaskSerializer(task)
+#         return Response(serializer.data)
+#     elif request.method == "POST":
+#         serializer = TaskSerializer(data=data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#     elif request.method == "PUT":
+#         serializer = TaskSerializer(task, data=data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#     elif request.method == "DELETE":
+#         task.delete()
+#         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+# @api_view(['GET','POST'])  #list of methods that are allowed are GET and POST .. if delete is not 
+#                            # mentioned above ---> means that once delete is choosen it will show 
+#                            # error 
+# @csrf_exempt
+# def task_list_api(request):
+#     if request.method == "POST":
+#         data = JSONParser().parse(request)
+#         serializer = TaskSerializer(data=data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return JsonResponse(serializer.data, status = status.HTTP_201_CREATED )
+#         return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST )
+#     elif request.method == "GET":
+#         tasks = Task.objects.all()
+#         serializer = TaskSerializer(tasks, many=True)
+#         return JsonResponse(serializer.data, safe=False)
+
+# # @api_view(['GET', 'POST', 'PUT', 'DELETE'])
+# # @csrf_exempt
+# # def task_detail_api(request, pk):
+# #     try:
+# #         task = Task.objects.get(id=pk)
+# #         data = JSONParser().parse(request)
+# #     except Task.DoesNotExist:
+# #         return Response(status=status.HTTP_404_NOT_FOUND)
+
+# #     if request.method == "GET":
+# #         serializer = TaskSerializer(task)
+# #         return Response(serializer.data)
+# #     elif request.method == "POST":
+# #         serializer = TaskSerializer(data=data)
+# #         if serializer.is_valid():
+# #             serializer.save()
+# #             return Response(serializer.data, status=status.HTTP_201_CREATED)
+# #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# #     elif request.method == "PUT":
+# #         serializer = TaskSerializer(task, data=data)
+# #         if serializer.is_valid():
+# #             serializer.save()
+# #             return Response(serializer.data)
+# #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# #     elif request.method == "DELETE":
+# #         task.delete()
+# #         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+
+# class TaskDetailApi(APIView):
+
+#     def get_object(self, pk):
+#         try:
+#             return Task.objects.get(pk=pk)
+#         except Task.DoesNotExist:
+#             raise Http404
+
+#     def get(self, request, pk):
+#         task = self.get_object(pk)
+#         serializer = TaskSerializer(task)
+#         return Response(serializer.data)
+
+#     def post(self, request, pk):
+#         serializer = TaskSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+#     def put(self, request, pk):
+#         task = self.get_object(pk)
+#         serializer = TaskSerializer(task, data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+#     def delete(self, request, pk):
+#         task = self.get_object(pk)
+#         task.delete()
+#         return Response(status=status.HTTP_204_NO_CONTENT)
+
+            
+
+# # class TaskListAPI(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+# #     queryset = Task.objects.all()
+# #     serializer_class = TaskSerializer
+
+# #     def get(self, request, *args , **kwargs):
+# #         return self.list(request, *args , **kwargs)
+
+# #     def post(self, request, *args , **kwargs):
+# #         return self.create(request, *args , **kwargs)
+
+# # class TaskDetailAPI(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):
+# #     queryset = Task.objects.all()
+# #     serializer_class = TaskSerializer
+
+# #     def get(self, request, pk):
+# #         return self.retrieve(request, pk)
+
+# #     def put(self, request, pk):
+# #         return self.update(request, pk)
+
+# #     def delete(self, request, pk):
+# #         return self.destroy(request, pk)
+
+
+
+
+
+@api_view(['GET', 'POST', 'PUT', 'DELETE'])
 @csrf_exempt
 def task_detail_api(request, pk):
     try:
         task = Task.objects.get(id=pk)
     except Task.DoesNotExist:
-        return HttpResponse(status=404)
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == "GET":
         serializer = TaskSerializer(task)
-        return JsonResponse(serializer.data)
-    elif request.method == "PUT":
-        serializer = TaskSerializer(task, data=request.data)
+        return Response(serializer.data)
+    elif request.method == "POST":
+        data = JSONParser().parse(request)
+        serializer = TaskSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data)
-        return JsonResponse(serializer.errors, status=400)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    elif request.method == "PUT":
+        data = JSONParser().parse(request)
+        serializer = TaskSerializer(task, data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     elif request.method == "DELETE":
         task.delete()
-        return HttpResponse(status=204)
-
-    
-
+        return Response(status=status.HTTP_204_NO_CONTENT)
+        
 
 class TaskListCreateView(generics.ListCreateAPIView):
     queryset = Task.objects.all()
