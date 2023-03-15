@@ -32,6 +32,12 @@ class CustomUserCreationForm(UserCreationForm):
         self.fields['username'].help_text = ''
         self.fields['password1'].help_text = ''
 
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError('This email address is already in use. Please enter a valid Email address')
+        return email
+
 
 class SignUp(FormView):
     template_name = "base/signup.html"
