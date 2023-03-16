@@ -9,21 +9,26 @@
 </head>
 <body>
 {% block content %}
-    <h1>Login</h1>
+    <h1>Account Login</h1>
+    <h2>Hello, Welcome back!</h2>
     <form action="" method="POST">
         <table>
             {% csrf_token %}
             {{ form.as_table }}
 
-            <tr>
-                <td colspan="2" align="right">
-                    <input type="submit" value="Login">
+            <tr class ="login" >
+                <td  colspan="2" align="right">
+                    <input type="submit" value="Log In">
                 </td>
+                <td>
+                    <a href="{% url 'reset_password' %}">Forgot Password?</a>
+                </td>
+
             </tr>
         </table>
     </form>
 
-    <p>Don't have an acount ? <a href="{% url 'sign-up' %}">Sign Up</a></p>
+    <p>Don't have an Account ? <a href="{% url 'sign-up' %}">Sign Up</a></p>
 {% endblock content %}
 </body>
 </html>
