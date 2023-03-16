@@ -112,9 +112,10 @@ input[type=submit] {
   }
 
 table {
+    text-align: center;
     background-color: rgb(255, 255, 255);
     border-collapse: separate;
-    width: 80%;
+    width: 50%;
     margin: 0 auto;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 1);
     margin-bottom: 10px;
@@ -129,12 +130,21 @@ th {
     text-align: center;
 }
 
+td:first-child {
+    margin-right: 0;
+  }
+
 td {
+    width: 150px;
     font-size: 18px;
     padding: 10px 15px;
     text-align: center;
     vertical-align: middle;
+    white-space: nowrap;
+    
 }
+
+
 
 td a {
     color: #2980b9;
