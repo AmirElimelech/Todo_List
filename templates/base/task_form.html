@@ -11,7 +11,6 @@
 
 {% block content %}
     <h3>Task Form</h3>
-    <a href="{% url 'tasks' %}">Go Back</a>
 
     <form action="" method="POST">
         <table>
@@ -22,6 +21,10 @@
                 <td colspan="2">
                     <input type="submit" value="Submit" >
                 </td>
+                <td>
+                    <a href="{% url 'tasks' %}">Go Back</a>
+                </td>
+                
             </tr>
         </table>
     </form>
